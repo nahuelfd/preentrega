@@ -10,6 +10,22 @@ router.get('/', async (req, res) => {
     res.json({ products })
 })
 
+router.get('/:pid', async (req, res) => {
+    const id = parseInt(req.params.pid)
+    const productToUpdate = req.body
+
+    const product = await fileManager.getByID(id)
+    if(!product) return res.status(404).send('Product not found')
+
+    for (const key of Object.keys(productToUpdate)) {
+        product[key] = productToUpdate[key]
+    }
+
+    await fileManager.getByID(id)
+
+    res.json({ product })
+})
+
 router.post('/', async (req, res) => {
     const product = req.body
     const productAdded = await fileManager.add(product)
