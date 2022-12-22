@@ -33,4 +33,20 @@ router.put('/:pid', async (req, res) => {
     res.json({status: "success", product })
 })
 
+router.delete('/:pid', async (req, res) => {
+    const id = parseInt(req.params.pid)
+    const removeP = req.body
+
+    const product = await fileManager.getByID(id)
+    if(!product) return res.status(404).send('Product not found')
+
+    for (const key of Object.keys(removeP)) {
+        product[key] = removeP[key]
+    }
+
+    await fileManager.removeProduct(id, product)
+
+    res.json({status: "success", message: "product deleted" })
+})
+
 export default router

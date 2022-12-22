@@ -23,6 +23,8 @@ class FileManager {
         return fs.promises.writeFile(this.path, JSON.stringify(list))
     }
 
+    
+
     getByID = async (id) => {
         const data = await this.read()
 
@@ -34,10 +36,10 @@ class FileManager {
     }
 
     add = async (prod) => {
-        //if (!this.checkProductoValido(prod)) {
-         //   console.log("Producto no valido")
-        //    return false
-        //}
+        if (!this.checkProductoValido(prod)) {
+           console.log("Producto no valido")
+            return false
+        }
     
         const productList = await this.read()
         const nextID = this.getNextID(productList)
@@ -79,7 +81,7 @@ class FileManager {
     }
 
     removeProduct = async (id) => {
-        const productList = await this.getProducts()
+        const productList = await this.read()
         const index = productList.findIndex(element => element.id === id)
         if (index < 0) return false
 
