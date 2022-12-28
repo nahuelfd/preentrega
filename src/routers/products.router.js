@@ -1,8 +1,13 @@
 import { Router } from 'express'
 import FileManager from '../manager/file_manager.js'
 
+
+
+
 const fileManager = new FileManager('products.json')
 const router = Router()
+
+
 
 
 router.get('/', async (req, res) => {
@@ -63,6 +68,13 @@ router.delete('/:pid', async (req, res) => {
     await fileManager.removeProduct(id, product)
 
     res.json({status: "success", message: "product deleted" })
+})
+
+router.get('/productsHand', async (req, res) => {
+    const products = await fileManager.get()
+    const list = await this.read()
+
+    res.render('index', {list})
 })
 
 export default router
