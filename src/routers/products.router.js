@@ -1,68 +1,75 @@
-import { Router } from 'express'
-import FileManager from '../manager/file_manager.js'
+import {Router} from "express"
+import productModel from "../dao/models/products.model.js"
 
-const fileManager = new FileManager('products.json')
 const router = Router()
 
-
-router.get('/', async (req, res) => {
-    const products = await fileManager.get()
-    res.json({ products })
+router.get("/", async (req, res) => {
+    const products = await productModel.find().lean().exec()
+    const limit = req.query.limit || 5
+    
+    res.json(products.slice(0, parseInt(limit)))
+    
 })
 
-router.get('/:pid', async (req, res) => {
-    const id = parseInt(req.params.pid)
+
+router.get("/view", async (req, res) => {
+    const products = await productModel.find().lean().exec()
+    res.render('realTimeProducts', {
+        data: products
+    })
+})
+
+router.get("/:id", async (req, res) => {
+    const id = req.params.id
+    const product = await productModel.findOne({_id: id})
+    res.json({
+        product
+    })
+})
+
+router.delete("/:pid", async (req, res) => {
+    const id = req.params.pid
+    const productDeleted = await productModel.deleteOne({_id: id})
+
+    req.io.emit('updatedProducts', await productModel.find().lean().exec());
+    res.json({
+        status: "Success",
+        massage: "Product Deleted!",
+        productDeleted
+    })
+})
+
+router.post("/", async (req, res) => {
+    try {
+        const product = req.body
+        
+        const productAdded = await productModel.create(product)
+        req.io.emit('updatedProducts', await productModel.find().lean().exec());
+        res.json({
+            status: "Success",
+            productAdded
+        })
+    } catch (error) {
+        console.log(error)
+        res.json({
+            error
+        })
+    }
+})
+
+router.put("/:pid", async (req, res) => {
+    const id = req.params.pid
     const productToUpdate = req.body
 
-    const product = await fileManager.getByID(id)
-    if(!product) return res.status(404).send('Product not found')
-
-    for (const key of Object.keys(productToUpdate)) {
-        product[key] = productToUpdate[key]
-    }
-
-    await fileManager.getByID(id)
-
-    res.json({ product })
+    const product = await productModel.updateOne({
+        _id: id
+    }, productToUpdate)
+    req.io.emit('updatedProducts', await productModel.find().lean().exec());
+    res.json({
+        status: "Success",
+        product
+    })
 })
 
-router.post('/', async (req, res) => {
-    const product = req.body
-    const productAdded = await fileManager.add(product)
-
-    res.json({status: "success", productAdded })
-})
-
-router.put('/:pid', async (req, res) => {
-    const id = parseInt(req.params.pid)
-    const productToUpdate = req.body
-
-    const product = await fileManager.getByID(id)
-    if(!product) return res.status(404).send('Product not found')
-
-    for (const key of Object.keys(productToUpdate)) {
-        product[key] = productToUpdate[key]
-    }
-
-    await fileManager.update(id, product)
-
-    res.json({status: "success", product })
-})
-
-router.delete('/:pid', async (req, res) => {
-    const id = parseInt(req.params.pid)
-    const removeP = req.body
-
-    const product = await fileManager.getByID(id)
-    if(!product) return res.status(404).send('Product not found')
-
-    for (const key of Object.keys(removeP)) {
-        product[key] = removeP[key]
-    }
-
-    await fileManager.removeProduct(id, product)
-
-    res.json({status: "success", message: "product deleted" })
-})
 
 export default router
