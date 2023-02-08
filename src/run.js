@@ -2,6 +2,7 @@ import productRouter from "./routers/products.router.js"
 import cartRouter from "./routers/cart.router.js"
 import productViewsRouter from "./routers/products.views.router.js"
 import messagesModel from "./dao/models/message.model.js"
+import sessionRouter from './routers/session.router.js'
 
 
 const run = (socketServer, app) => {
@@ -10,6 +11,7 @@ const run = (socketServer, app) => {
         next()
     })
     app.use("/products", productViewsRouter)
+    app.use("/session", sessionRouter)
 
     app.use("/api/products", productRouter)
     app.use("/api/carts", cartRouter)
