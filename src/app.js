@@ -2,8 +2,10 @@ import express from 'express';
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
+import passport from 'passport'
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import initializePassport from './config/passport.config.js'
 import __dirname from './utils.js'
 import run from './run.js'
 
@@ -28,6 +30,10 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 //app.use('/api/products', productRouter)
 //app.use('/api/carts', cartRouter)
