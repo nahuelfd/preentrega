@@ -1,6 +1,6 @@
 import productRouter from "./routers/products.router.js"
 import cartRouter from "./routers/cart.router.js"
-import messagesModel from "./dao/models/message.model.js"
+import { MessageService } from "./repository/index.js"
 import productViewsRouter from "./routers/products.views.router.js"
 import sessionRouter from './routers/session.router.js'
 
@@ -20,8 +20,8 @@ const run = (socketServer, app) => {
     socketServer.on("connection", socket => {
         console.log("New client connected")
         socket.on("message", async data => {
-        await messagesModel.create(data)
-        let messages = await messagesModel.find().lean().exec()
+        await MessageService.create(data)
+        let messages = await MessageService.get()
         socketServer.emit("logs", messages)
         })
     })

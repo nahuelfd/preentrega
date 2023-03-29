@@ -1,6 +1,8 @@
 import passport from "passport"
-import UserModel from "../dao/models/user.model.js";
+import { UserService } from "../repository/index.js"
 import GitHubStrategy from "passport-github2"
+import config from "./config.js"
+
 
 const initializePassport = () => {
 
@@ -13,14 +15,16 @@ const initializePassport = () => {
         console.log(profile);
 
         try {
-            const user = await UserModel.findOne({email: profile._json.email})
+            const user = await UserService.getOneByEmail(username)
             if(user) return done(null, user)
 
-            const newUser = await UserModel.create({
+            const newUser = await UserService.create({
                 first_name: profile._json.name,
                 last_name: "",
                 email: profile._json.email,
-                password: ""
+                role: 'user',
+                social: 'local',
+                password: createHash(password)
             })
 
             return done(null, newUser)

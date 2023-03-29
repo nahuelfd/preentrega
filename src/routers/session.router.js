@@ -1,6 +1,7 @@
 import { Router } from "express"
 import passport from "passport"
-import UserModel from "../dao/models/user.model.js"
+//import UserModel from "../dao/models/user.model.js"
+import { passportCall, authorization } from "../utils.js"
 
 const router = Router()
 
@@ -10,13 +11,14 @@ router.get('/register', (req, res) => {
 })
 
 // API para crear usuarios e la DB
+
 router.post('/register', async(req, res) => {
     const userNew = req.body
     console.log(userNew);
-
+    
     const user = new UserModel(userNew)
     await user.save()
-
+    
     res.redirect('/sessions/login')
 })
 
@@ -24,6 +26,22 @@ router.post('/register', async(req, res) => {
 router.get('/login', (req, res) => {
     res.render('sessions/login')
 })
+
+router.get('/register', (req, res) => {
+    res.render('sessions/register')
+})
+
+
+router.post('/register', passport.authenticate('register'), async (req, res) => {
+    res.redirect('/session/login')
+})
+
+router.get('/current', passportCall('jwt'), authorization('user'), async (req, res)=>{
+    const id = req.user.user._id
+    const user = await UserService.getOneByID(id)
+    res.render('sessions/profile', {user: user})
+})
+
 
 // API para login
 router.post('/login', async (req, res) => {
@@ -40,6 +58,8 @@ router.post('/login', async (req, res) => {
 
     res.redirect('/products')
 })
+
+
 // cerrar sesion
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {
@@ -66,7 +86,7 @@ router.get(
 
         req.session.user = req.user
         console.log("User Session: ", req.session.user);
-        res.redirect('/')
+        res.redirect('/products')
     }
 )
 

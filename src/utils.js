@@ -1,14 +1,16 @@
 import {fileURLToPath} from 'url'
 import { dirname } from 'path'
 import jwt from 'jsonwebtoken'
+import passport from 'passport'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const JWT_PRIVATE_KEY = "LlavePrivad asdasd123"
+import config from './config/config.js'
+
 
 export default __dirname
 
 export const generateToken = user => {
-    const token = jwt.sign({user}, PRIVATE_KEY, {expiresIn: '24h'})
+    const token = jwt.sign({user}, config.jwtPrivateKey, {expiresIn: '24h'})
 
     return token
 }
@@ -24,6 +26,32 @@ export const authToken = (req, res, next) => {
         req.user = credentials.user
         next()
     })
+
+    
 }
 
+export const extractCookie = req => {
+    return (req && req.cookies) ? req.cookies[config.jwtCookieName] : null
+}
 
+export const passportCall = (strategy) =>  {
+    return async (req, res, next) => {
+        passport.authenticate(strategy, function(err, user, info){
+            if(err) return next(err)
+            if(!user) return res.status(401).render("errors/base", {error: info.messages ? info.messages : info.toString()})
+
+            req.user = user
+            next()
+        }) (req, res, next)
+    }
+}
+
+export const authorization = (role) => {
+    return async (req, res, next) => {
+        const user = req.user.user;
+        if (!user) return res.status(401).send({ error: "Unauthorized" });
+        if (user.role != role) return res.status(403).send({ error: 'No Permission' })
+        next();
+    }
+
+}

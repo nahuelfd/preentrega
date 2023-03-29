@@ -1,6 +1,5 @@
 import {Router} from "express"
-import productModel from "../dao/models/products.model.js"
-import mongoosePaginate from 'mongoose-paginate-v2'
+import { ProductService } from "../repository/index.js"
 
 const router = Router()
 
@@ -28,12 +27,20 @@ router.get("/", async (req, res) => {
         lean: true
     }
     
-    const data = await productModel.paginate(search, options)
+    const data = await ProductService.getPaginate(search, options)
     console.log(JSON.stringify(data, null, 2, '\t'));
 
-    //const user = req.session.user
+    const user = req.session.user
     
-    res.json({data})
+    const front_pagination = []
+    for (let i = 1; i <= data.totalPages; i++) {
+        front_pagination.push({
+            page: i,
+            active: i == data.page
+        })
+    }
+
+    res.render('products', { data, user, front_pagination })
 })
 
 export default router
