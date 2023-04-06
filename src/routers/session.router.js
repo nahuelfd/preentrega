@@ -2,8 +2,12 @@ import { Router } from "express"
 import passport from "passport"
 //import UserModel from "../dao/models/user.model.js"
 import { passportCall, authorization } from "../utils.js"
+import { addLogger } from "../logger.js"
+
 
 const router = Router()
+
+app.use(addLogger)
 
 //Vista para registrar usuarios
 router.get('/register', (req, res) => {
@@ -14,7 +18,7 @@ router.get('/register', (req, res) => {
 
 router.post('/register', async(req, res) => {
     const userNew = req.body
-    console.log(userNew);
+    req.logger.info(userNew);
     
     const user = new UserModel(userNew)
     await user.save()
@@ -64,7 +68,7 @@ router.post('/login', async (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy(err => {
         if(err) {
-            console.log(err);
+            req.logger.error(err);
             res.status(500).render('errors/base', {error: err})
         } else res.redirect('/session/login')
     })
@@ -85,7 +89,7 @@ router.get(
         console.log("Callback: ", req.user);
 
         req.session.user = req.user
-        console.log("User Session: ", req.session.user);
+        req.logger.info("User Session: ", req.session.user);
         res.redirect('/products')
     }
 )

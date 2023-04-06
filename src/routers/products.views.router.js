@@ -1,7 +1,10 @@
 import {Router} from "express"
 import { ProductService } from "../repository/index.js"
+import { addLogger } from "../logger.js"
 
 const router = Router()
+
+app.use(addLogger)
 
 router.get("/", async (req, res) => {
 
@@ -28,7 +31,7 @@ router.get("/", async (req, res) => {
     }
     
     const data = await ProductService.getPaginate(search, options)
-    console.log(JSON.stringify(data, null, 2, '\t'));
+    req.logger.info(JSON.stringify(data, null, 2, '\t'));
 
     const user = req.session.user
     

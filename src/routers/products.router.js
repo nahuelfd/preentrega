@@ -1,8 +1,10 @@
 import {Router} from "express"
 import { ProductService } from "../repository/index.js"
 import { generateProduct } from '../utils.js'
+import { addLogger } from "../logger.js"
 
 const router = Router()
+app.use(addLogger)
 
 router.get("/", async (req, res) => {
     const products = await ProductService.get()
@@ -51,7 +53,7 @@ router.post("/", async (req, res) => {
             productAdded
         })
     } catch (error) {
-        console.log(error)
+        req.logger.error(error)
         res.json({
             error
         })
