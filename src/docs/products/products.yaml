@@ -1,0 +1,130 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene todos los products
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Productos obtenidos satisfactoriamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#components/schemas/Product"
+        "500":
+          description: Error en servidor, o base de datos
+    post:
+      summary: Crea un nuevo product
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/addProduct"
+      responses:
+        "200":
+          description: Producto creado satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Product"
+        "500":
+          description: Error en servidor, o base de datos
+  /api/products/{pid}:
+    get:
+      summary: Obtiene el product por id
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto 
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Product"
+        "500":
+          description: Error en servidor, o base de datos
+    put:
+      summary: Modifica product segun su id
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto que se desea modificar
+        schema:
+          $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateProduct"
+      responses:
+        "200":
+          description: Producto modificado satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Product"
+        "500":
+          description: Error en servidor, o base de datos
+    delete:
+      summary: Id de producto a eliminar
+      tags:
+        - Products
+      parameters:
+      - name: pid
+        in: path
+        required: true
+        description: Id del producto a eliminar
+        responses:
+        "200":
+          description: Producto eliminado satisfactoriamente
+        "500":
+          description: Error en servidor, o base de datos
+
+
+
+
+components:
+  schemas:
+    Product:
+      type: Object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID autogenerado por Mongo
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripción del producto
+        price:
+          type: Number
+          description: Precio del producto
+        stock:
+          type: Number
+          description: Stock del producto
+        categories:
+          type: Array
+          description: Categorías del producto
+        thumbnails:
+          type: Array
+          description: Imágen del producto
+       
+      
+      

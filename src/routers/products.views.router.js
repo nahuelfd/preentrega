@@ -4,7 +4,7 @@ import { addLogger } from "../logger.js"
 
 const router = Router()
 
-app.use(addLogger)
+router.use(addLogger)
 
 router.get("/", async (req, res) => {
 

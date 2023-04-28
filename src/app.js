@@ -4,6 +4,8 @@ import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import passport from 'passport'
 import cookieParser from "cookie-parser"
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import initializePassport from './config/passport.config.js'
@@ -11,6 +13,22 @@ import __dirname from './utils.js'
 import run from './run.js'
 
 const app = express()
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: "Documentacion",
+            description: "Proyecto backend"
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJsdoc(swaggerOptions)
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
+
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 

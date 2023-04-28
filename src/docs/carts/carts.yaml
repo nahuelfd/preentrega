@@ -1,0 +1,196 @@
+paths:
+  /api/carts:
+    post:
+      summary: Crea un nuevo carrito
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Carrito creado satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Error en servidor, o base de datos
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene los productos del carrito
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito 
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Carrito obtenido satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Error en servidor, o base de datos
+    put:
+      summary: Reemplaza el carrito por un array de productos
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito 
+        schema:
+          $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/replaceProducts"
+      responses:
+        "200":
+          description: Carrito modificado satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Error en servidor, o base de datos
+    delete:
+      summary: Elimina el carrito seleccionado
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito 
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Carrito eliminado con éxito
+        "500":
+          description: Error en servidor, o base de datos
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agrega un producto al carrito
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito 
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto 
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Producto fue agregado al carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Error en servidor, o base de datos
+    put:
+      summary: Modifica la cantidad del producto en el carrito
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito 
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto 
+        schema:
+          $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/updateQuantity"
+      responses:
+        "200":
+          description: Producto agregado al carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Error en servidor, o base de datos
+    delete:
+      summary: Elimina un producto del carrito
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito 
+        schema:
+          $type: String
+      - name: pid
+        in: path
+        required: true
+        description: ID del producto 
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Producto agregado al carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Cart"
+        "500":
+          description: Error en servidor, o base de datos
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Realiza la compra de los productos que se encuentran en el carrito
+      tags:
+        - Carts
+      parameters:
+      - name: cid
+        in: path
+        required: true
+        description: ID del carrito 
+        schema:
+          $type: String
+      responses:
+        "200":
+          description: Compra realizada satisfactoriamente
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Ticket"
+        "500":
+          description: Error en servidor, o base de datos
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: ID autogenerado por Mongo
+        products:
+          type: Array
+          description: Productos agregados al carrito
+      

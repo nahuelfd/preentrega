@@ -7,7 +7,7 @@ import { addLogger } from "../logger.js"
 
 const router = Router()
 
-app.use(addLogger)
+router.use(addLogger)
 
 //Vista para registrar usuarios
 router.get('/register', (req, res) => {
