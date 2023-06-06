@@ -1,16 +1,17 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io';
-import mongoose from 'mongoose';
+import run from './run.js'
 import passport from 'passport'
-import cookieParser from "cookie-parser"
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUiExpress from 'swagger-ui-express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import initializePassport from './config/passport.config.js'
+import cookieParser from "cookie-parser"
 import __dirname from './utils.js'
-import run from './run.js'
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
+import config from "./config/config.js"
 
 const app = express()
 
@@ -26,7 +27,7 @@ const swaggerOptions = {
 }
 
 const specs = swaggerJsdoc(swaggerOptions)
-app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
+app.use('/apidocs', swaggerUiExpress.serve , swaggerUiExpress.setup(specs))
 
 
 app.use(express.json())
@@ -60,9 +61,9 @@ app.use(passport.session())
 //app.use("/api/carts", cartRouter)
 
 //app.use('/', (req, res) => res.send('HOME'))
+    const connection = mongoose.connect(process.env.MONGO_URI);
 
-
-    const httpServer = app.listen(8080, () => console.log("listening"))
+    const httpServer = app.listen(config.PORT, () => console.log("listening"))
     const socketServer = new Server(httpServer)
     httpServer.on("error", (e) => console.log("error: " + e))
 
