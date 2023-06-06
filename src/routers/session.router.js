@@ -3,11 +3,27 @@ import passport from "passport"
 //import UserModel from "../dao/models/user.model.js"
 import { passportCall, authorization } from "../utils.js"
 import { addLogger } from "../logger.js"
+import {changePassword, sendRecoveryMail, changeUserRole} from "../controller/session.controller.js"
 
 
 const router = Router()
 
 router.use(addLogger)
+
+router.get("/changeUserRole", passportCall("jwt"), changeUserRole);
+
+router.post("/forgotPassword", sendRecoveryMail);
+
+router.post("/forgotPassword/:uid/:token", changePassword);
+
+router.get('/forgotPassword/:uid/:token', (req, res) => {
+    const uid = req.params.uid
+    const token = req.params.token
+    res.render('sessions/changePassword', {
+        uid: uid,
+        token: token
+    })
+})
 
 //Vista para registrar usuarios
 router.get('/register', (req, res) => {

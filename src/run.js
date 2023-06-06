@@ -4,6 +4,7 @@ import { MessageService } from "./repository/index.js"
 import productViewsRouter from "./routers/products.views.router.js"
 import sessionRouter from './routers/session.router.js'
 import { addLogger } from './logger.js'
+import { passportCall } from "./utils.js"
 
 
 const run = (socketServer, app) => {
@@ -11,11 +12,11 @@ const run = (socketServer, app) => {
         req.io = socketServer
         next()
     })
-    app.use("/products", productViewsRouter)
+    app.use("/products", passportCall("jwt"), productViewsRouter)
     //app.use("/session", sessionRouter)
 
-    app.use("/api/products", productRouter)
-    app.use("/api/carts", cartRouter)
+    app.use("/api/products", passportCall("jwt"), productRouter)
+    app.use("/api/carts", passportCall("jwt"), cartRouter)
     app.use('/api/session', sessionRouter)
     app.use(addLogger)
     

@@ -10,7 +10,12 @@ router.get("/", async (req, res) => {
     res.json({ carts })
 })
 
-
+router.get("/:id", async (req, res) => {
+    const id = req.params.id
+    const cart = await CartService.getByIdLean(id)
+    const productsInCart = cart.products
+    res.render("cart", {productsInCart, cart})
+})
 
 router.post("/", async (req, res) => {
     const newCart = await CartService.add({})
@@ -100,6 +105,33 @@ router.delete("/:cid", authorization('admin'), async (req, res) => {
     res.json({status: "Success", cart})
 })
 
+router.put("/:cid/product/:pid", authorization('admin'), async (req, res) => {
+    const cartID = req.params.cid
+    const productID = req.params.pid
+    const newQuantity = req.body.quantity
 
+    const cart = await CartService.getById(cartID)
+    if(!cart) return res.status(404).json({status: "error", error: "Cart Not Found"})
+
+    const productIDX = cart.products.find(p => p.id._id == productID)
+    productIDX.quantity = newQuantity
+
+    await cart.save()
+
+    res.json({status: "Success", cart})
+})
+
+router.put("/:cid", authorization('admin'), async (req, res) => {
+    const cartID = req.params.cid
+    const cartUpdate = req.body
+
+    const cart = await CartService.getById(cartID)
+    if(!cart) return res.status(404).json({status: "error", error: "Cart Not Found"})
+
+    cart.products = cartUpdate
+    await cart.save()
+
+    res.json({status: "Success", cart})
+})
 
 export default router

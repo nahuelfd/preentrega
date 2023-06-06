@@ -9,6 +9,14 @@ import config from './config/config.js'
 
 export default __dirname
 
+export const createHash = password => {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+}
+
+export const isValidPassword = (user, password) => {
+    return bcrypt.compareSync(password, user.password)
+}
+
 export const generateToken = user => {
     const token = jwt.sign({user}, config.jwtPrivateKey, {expiresIn: '24h'})
 

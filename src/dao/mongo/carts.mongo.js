@@ -13,5 +13,20 @@ export default class Product {
         return true
     }
 
+    getById = async (id) => {
+        return await CartModel.findOne({_id: id})
+    }
+
+    getByIdLean = async (id) => {
+        return await CartModel.findOne({_id: id}).lean()
+    }
+
+    createTik = async(data) => {
+        return await TicketModel.create(data)     
+    }
+
+    getTik = async(code) => {
+        return await TicketModel.findOne({code}).lean().exec()
+    }
 
 }

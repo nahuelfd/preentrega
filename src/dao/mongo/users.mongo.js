@@ -48,4 +48,50 @@ export default class User {
     getOneByEmail = async(email) => {
         return await UserModel.findOne({ email }).lean().exec()
     }
+
+    update = async (id, data) => {
+        return await UserModel.updateOne({_id: id}, data)
+    }
+
+    updatePass = async (id, password) => {
+        return await UserModel.updateOne({_id: id}, {$set: {password: password}})
+    }
+
+    updateUserConection = async (id, date) => {
+        return await UserModel.updateOne({_id: id}, {$set: {lastConecction: date}})
+    }
+
+    changeUserRole = async (uid) => {
+        const user = await UserModel.findOne({_id: uid});
+        await UserModel.updateOne({_id: uid}, {$set: {role: "premium"}});
+        return {status: "success", newRole: "premium"};
+    };
+
+    delete = async (id) => {
+        return await UserModel.deleteOne({_id: id})
+    }
+
+    deleteMany = async (cond) => {
+        return await UserModel.deleteMany(cond)
+    }
+
+    addDoc = async (uid, docName, path) =>{
+        try {
+            const user = await UserModel.findOne({_id: uid});
+            user.documents.push({name: docName, reference: path});
+            user.save();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    updateDoc = async (uid, index, docName, path) =>{
+        try {
+            const user = await UserModel.findOne({_id: uid});
+            user.documents[index] = {name: docName, reference: path};
+            user.save();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
