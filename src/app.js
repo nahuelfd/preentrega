@@ -61,9 +61,9 @@ app.use(passport.session())
 //app.use("/api/carts", cartRouter)
 
 //app.use('/', (req, res) => res.send('HOME'))
-    const port = process.env.PORT || 8080
-
-    const httpServer = app.listen(port, () => console.log("listening"))
+    const PORT = process.env.PORT || 8080
+    const connection = mongoose.connect(`process.env.MONGO_URI`)
+    const httpServer = app.listen(PORT, () => console.log("listening"))
     const socketServer = new Server(httpServer)
     httpServer.on("error", (e) => console.log("error: " + e))
 
