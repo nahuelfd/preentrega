@@ -62,7 +62,7 @@ app.use(passport.session())
 
 //app.use('/', (req, res) => res.send('HOME'))
     const PORT = process.env.PORT || 8080
-    const connection = mongoose.connect(`process.env.MONGO_URI`)
+    const connection = mongoose.connect(process.env.MONGO_URI)
     const httpServer = app.listen(PORT, () => console.log("listening"))
     const socketServer = new Server(httpServer)
     httpServer.on("error", (e) => console.log("error: " + e))
