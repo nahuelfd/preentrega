@@ -8,3 +8,5 @@ warning: just a warning
 info: url info
 info: GET on /favicon.ico - 8:22:25 PM
 info: POST on /api/user - 8:28:34 PM
+info: GET on / - 11:33:23 PM
+info: GET on /favicon.ico - 11:33:25 PM
