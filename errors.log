@@ -10,3 +10,15 @@ info: GET on /favicon.ico - 8:22:25 PM
 info: POST on /api/user - 8:28:34 PM
 info: GET on / - 11:33:23 PM
 info: GET on /favicon.ico - 11:33:25 PM
+info: GET on / - 12:07:35 AM
+info: GET on /favicon.ico - 12:07:35 AM
+info: GET on /favicon.ico - 12:07:41 AM
+info: GET on /session/logout? - 12:08:13 AM
+info: GET on /favicon.ico - 12:08:14 AM
+info: GET on /session/login - 12:08:21 AM
+info: GET on /favicon.ico - 12:08:21 AM
+info: GET on /login - 12:08:31 AM
+info: GET on /favicon.ico - 12:08:31 AM
+info: GET on /register - 12:08:40 AM
+info: GET on /favicon.ico - 12:08:40 AM
+info: GET on /favicon.ico - 12:08:49 AM

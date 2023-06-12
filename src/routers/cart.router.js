@@ -68,7 +68,7 @@ router.post("/:cid/purchase", passportCall('jwt'), authorization('user'), async 
     const cartID = req.params.cid
     const cart = await CartService.getById(cartID)
     let totalPrice = 0
-    const noStock = []
+    const stock = []
     const comparation = cart.products
     await Promise.all(comparation.map( async p => {
         if(p.id.stock >= p.quantity){
@@ -79,7 +79,7 @@ router.post("/:cid/purchase", passportCall('jwt'), authorization('user'), async 
             comparation.splice(productIDX, 1)
             await cart.save()
         } else {
-            noStock.push({
+            stock.push({
                 title: p.id.title,
                 price: p.id.price,
                 quantity: p.quantity
